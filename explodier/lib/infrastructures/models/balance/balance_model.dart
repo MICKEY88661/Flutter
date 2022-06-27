@@ -1,22 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'balance_model.g.dart';
 
-@JsonSerializable()
-class BalanceResponseModel {
-  final BalanceModel data;
-  // final bool? error;
-  // final String? error_message;
-  // final String? error_code;
-
-  BalanceResponseModel(this.data);
-
-  factory BalanceResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$BalanceResponseModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BalanceResponseModelToJson(this);
-}
-
+@immutable
 @JsonSerializable()
 class BalanceModel {
   final String? address;
@@ -30,13 +17,13 @@ class BalanceModel {
   final int? chainID;
   final List<BalanceItemModel?>? items;
 
-  BalanceModel({
-    required this.address,
-    required this.updatedAt,
-    required this.nextUpdateAt,
-    required this.quoteCurrency,
-    required this.chainID,
-    required this.items,
+  const BalanceModel({
+    this.address,
+    this.updatedAt,
+    this.nextUpdateAt,
+    this.quoteCurrency,
+    this.chainID,
+    this.items,
   });
 
   factory BalanceModel.fromJson(Map<String, dynamic> json) =>
@@ -45,6 +32,7 @@ class BalanceModel {
   Map<String, dynamic> toJson() => _$BalanceModelToJson(this);
 }
 
+@immutable
 @JsonSerializable()
 class BalanceItemModel {
   @JsonKey(name: 'contract_decimals')
@@ -56,7 +44,7 @@ class BalanceItemModel {
   @JsonKey(name: 'contract_address')
   final String? contractAddress;
   @JsonKey(name: 'supports_erc')
-  final List<String?>? supportsErc;
+  final List<String>? supportsErc;
   @JsonKey(name: 'logo_url')
   final String? logoUrl;
   @JsonKey(name: 'last_transferred_at')
@@ -75,7 +63,7 @@ class BalanceItemModel {
   @JsonKey(name: 'nft_data')
   final String? nftData;
 
-  BalanceItemModel(
+  const BalanceItemModel({
     this.contractDecimals,
     this.contractName,
     this.contractTickerSymbol,
@@ -91,7 +79,7 @@ class BalanceItemModel {
     this.quote,
     this.quote24h,
     this.nftData,
-  );
+  });
 
   factory BalanceItemModel.fromJson(Map<String, dynamic> json) =>
       _$BalanceItemModelFromJson(json);

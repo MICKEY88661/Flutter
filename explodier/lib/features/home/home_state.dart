@@ -1,22 +1,29 @@
 import 'package:equatable/equatable.dart';
-import 'package:explodier/infrastructures/models/balance/balance_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 
 class HomeState extends Equatable {
-  final AsyncValue<BalanceModel> balance;
+  final int currentPageIndex;
+  final PageController pageController;
+  final String userName;
 
   const HomeState({
-    required this.balance,
+    this.currentPageIndex = 0,
+    this.userName = "",
+    required this.pageController,
   });
 
   HomeState copyWith({
-    AsyncValue<BalanceModel>? balance,
+    int? currentPageIndex,
+    PageController? pageController,
+    String? userName,
   }) {
     return HomeState(
-      balance: balance ?? this.balance,
+      currentPageIndex: currentPageIndex ?? this.currentPageIndex,
+      pageController: pageController ?? this.pageController,
+      userName: userName ?? this.userName,
     );
   }
 
   @override
-  List<Object?> get props => [balance];
+  List<Object?> get props => [currentPageIndex, pageController, userName];
 }

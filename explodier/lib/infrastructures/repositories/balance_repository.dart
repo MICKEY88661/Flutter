@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:explodier/infrastructures/core/http_client.dart';
 import 'package:explodier/infrastructures/models/balance/balance_model.dart';
+import 'package:explodier/infrastructures/models/covalent/covalent_response_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'repository.dart';
@@ -11,7 +12,10 @@ final balanceRepoProvider = Provider<IBalanceRepository>((ref) {
 });
 
 abstract class IBalanceRepository {
-  Future<BalanceModel> getTokenBalance();
+  Future<BalanceModel> getTokenBalances({
+    required String contractAddress,
+    required int chainId,
+  });
 }
 
 class BalanceRepository extends Repository implements IBalanceRepository {
@@ -21,15 +25,19 @@ class BalanceRepository extends Repository implements IBalanceRepository {
 
   // TODO inject chainID and address
   @override
-  Future<BalanceModel> getTokenBalance() async {
-    const int chainID = 1;
-    const String address = "demo.eth";
-
+  Future<BalanceModel> getTokenBalances({
+    required String contractAddress,
+    required int chainId,
+  }) async {
     try {
-      final response = await dio.get("$chainID/address/$address/balances_v2/");
-      final balanceRes = BalanceResponseModel.fromJson(response.data);
+      final path = "$chainId/address/$contractAddress/balances_v2/";
+      final response = await dio.get(path);
+      final balance = CovalentResponseModel<BalanceModel>.fromJson(
+        response.data,
+        BalanceModel.fromJson,
+      ).data!;
 
-      return balanceRes.data;
+      return balance;
     } catch (e, s) {
       super.logger.severe(runtimeType, e, s);
       rethrow;
