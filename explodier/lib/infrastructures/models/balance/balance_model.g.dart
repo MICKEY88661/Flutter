@@ -6,18 +6,6 @@ part of 'balance_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BalanceResponseModel _$BalanceResponseModelFromJson(
-        Map<String, dynamic> json) =>
-    BalanceResponseModel(
-      BalanceModel.fromJson(json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$BalanceResponseModelToJson(
-        BalanceResponseModel instance) =>
-    <String, dynamic>{
-      'data': instance.data,
-    };
-
 BalanceModel _$BalanceModelFromJson(Map<String, dynamic> json) => BalanceModel(
       address: json['address'] as String?,
       updatedAt: json['updated_at'] == null
@@ -47,25 +35,25 @@ Map<String, dynamic> _$BalanceModelToJson(BalanceModel instance) =>
 
 BalanceItemModel _$BalanceItemModelFromJson(Map<String, dynamic> json) =>
     BalanceItemModel(
-      json['contract_decimals'] as int?,
-      json['contract_name'] as String?,
-      json['contract_ticker_symbol'] as String?,
-      json['contract_address'] as String?,
-      (json['supports_erc'] as List<dynamic>?)
-          ?.map((e) => e as String?)
+      contractDecimals: json['contract_decimals'] as int?,
+      contractName: json['contract_name'] as String?,
+      contractTickerSymbol: json['contract_ticker_symbol'] as String?,
+      contractAddress: json['contract_address'] as String?,
+      supportsErc: (json['supports_erc'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
-      json['logo_url'] as String?,
-      json['last_transferred_at'] == null
+      logoUrl: json['logo_url'] as String?,
+      lastTransferredAt: json['last_transferred_at'] == null
           ? null
           : DateTime.parse(json['last_transferred_at'] as String),
-      json['type'] as String?,
-      json['balance'] as String?,
-      json['balance_24h'] as String?,
-      (json['quote_rate'] as num?)?.toDouble(),
-      (json['quote_rate_24h'] as num?)?.toDouble(),
-      (json['quote'] as num?)?.toDouble(),
-      (json['quote_24h'] as num?)?.toDouble(),
-      json['nft_data'] as String?,
+      type: json['type'] as String?,
+      balance: json['balance'] as String?,
+      balance24h: json['balance_24h'] as String?,
+      quoteRate: (json['quote_rate'] as num?)?.toDouble(),
+      quoteRate24h: (json['quote_rate_24h'] as num?)?.toDouble(),
+      quote: (json['quote'] as num?)?.toDouble(),
+      quote24h: (json['quote_24h'] as num?)?.toDouble(),
+      nftData: json['nft_data'] as String?,
     );
 
 Map<String, dynamic> _$BalanceItemModelToJson(BalanceItemModel instance) =>

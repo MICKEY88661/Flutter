@@ -1,33 +1,43 @@
 import 'package:explodier/features/home/home_state.dart';
-import 'package:explodier/infrastructures/repositories/balance_repository.dart';
+import 'package:explodier/infrastructures/repositories/user_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final homeCtrlProvider =
     StateNotifierProvider.autoDispose<HomeController, HomeState>((ref) {
+  final userRepo = ref.watch(userRepoProvider);
   return HomeController(
-    const HomeState(
-      balance: AsyncLoading(),
+    HomeState(
+      pageController: PageController(),
     ),
-    balanceFacade: ref.watch(balanceRepoProvider),
+    userFacade: userRepo,
   );
 });
 
 class HomeController extends StateNotifier<HomeState> {
-  final IBalanceRepository balanceFacade;
+  final IUserRepostory userFacade;
 
   HomeController(
     HomeState state, {
-    required this.balanceFacade,
+    required this.userFacade,
   }) : super(state) {
-    loadBalance();
+    init();
   }
-  Future<void> loadBalance() async {
-    try {
-      state = state.copyWith(balance: const AsyncLoading());
-      final balance = await balanceFacade.getTokenBalance();
-      state = state.copyWith(balance: AsyncData(balance));
-    } catch (e) {
-      state = state.copyWith(balance: AsyncError(e));
-    }
+
+  void init() {
+    state = state.copyWith(
+      userName: userFacade.currentUser.name,
+    );
+  }
+
+  void pageChanged(int index) {
+    state.pageController.jumpToPage(index);
+    state = state.copyWith(currentPageIndex: index);
+  }
+
+  @override
+  void dispose() {
+    state.pageController.dispose();
+    super.dispose();
   }
 }
