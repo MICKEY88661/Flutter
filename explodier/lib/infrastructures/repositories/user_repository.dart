@@ -18,7 +18,7 @@ class UserRepostory extends Repository implements IUserRepostory {
   List<UserModel> users = [
     UserModel(
       name: "demo-user",
-      walletAddress: "demo.eth",
+      walletAddress: "0x627b321592a34D29AD5881274BB7a71Cedf5CD3C",
       //"0x627b321592a34D29AD5881274BB7a71Cedf5CD3C",
       //"0x3CAb982C10ca41f1a1992815b9185375c472cedc",
       email: "demo.gmail.com",

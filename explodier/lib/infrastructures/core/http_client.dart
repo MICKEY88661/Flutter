@@ -1,13 +1,36 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // TODO use interface to decouple dio package
-// TODO remove hard code api key
-final dioProvider = Provider<Dio>((ref) {
+
+// COVALENT API
+final covalentDioProvider = Provider<Dio>((ref) {
+  const key = String.fromEnvironment('COVALENT_API_KEY');
+
   return Dio(
     BaseOptions(
       baseUrl: "https://api.covalenthq.com/v1/",
-      queryParameters: {"key": "ckey_ad25a9eb593c4bdabc741ca4e18"},
+      queryParameters: {"key": key},
+    ),
+  )..interceptors.add(
+      LogInterceptor(
+        requestHeader: false,
+        // responseHeader: false,
+      ),
+    );
+});
+
+// Blockdaemon API
+final blockdaemonDioProvider = Provider<Dio>((ref) {
+  const key = String.fromEnvironment('BLOCKDAEMON_API_KEY');
+  return Dio(
+    BaseOptions(
+      baseUrl: "https://ubiquity.api.blockdaemon.com/v1/",
+      headers: {
+        HttpHeaders.authorizationHeader: key,
+      },
     ),
   )..interceptors.add(
       LogInterceptor(

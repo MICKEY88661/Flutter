@@ -7,7 +7,7 @@ import 'package:explodier/infrastructures/repositories/repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final nftRepoProvider = Provider<INftRpository>((ref) {
-  final dio = ref.watch(dioProvider);
+  final dio = ref.watch(covalentDioProvider);
 
   return NftRepository(dio);
 });
