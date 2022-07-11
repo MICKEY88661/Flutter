@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'repository.dart';
 
 final balanceRepoProvider = Provider<IBalanceRepository>((ref) {
-  final dio = ref.watch(dioProvider);
+  final dio = ref.watch(covalentDioProvider);
   return BalanceRepository(dio);
 });
 

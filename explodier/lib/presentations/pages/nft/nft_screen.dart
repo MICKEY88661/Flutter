@@ -23,12 +23,13 @@ class _NFTScreenState extends ConsumerState<NFTScreen>
                 child: Text("i dont have them"),
               );
             }
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Nft(data[index]);
-              },
-            );
+            return const Center();
+            // return ListView.builder(
+            //   itemCount: data.length,
+            //   itemBuilder: (BuildContext context, int index) {
+            //     return Nft(data[index]);
+            //   },
+            // );
           },
           error: (error, _) => Text(
             error.toString(),
