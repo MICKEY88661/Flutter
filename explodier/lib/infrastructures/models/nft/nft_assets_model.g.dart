@@ -6,6 +6,20 @@ part of 'nft_assets_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+NftModel _$NftModelFromJson(Map<String, dynamic> json) => NftModel(
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => NftAssetModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      meta: json['meta'] == null
+          ? null
+          : MetaModel.fromJson(json['meta'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$NftModelToJson(NftModel instance) => <String, dynamic>{
+      'data': instance.data,
+      'meta': instance.meta,
+    };
+
 NftAssetModel _$NftAssetModelFromJson(Map<String, dynamic> json) =>
     NftAssetModel(
       id: json['id'] as String?,

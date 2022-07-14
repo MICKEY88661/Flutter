@@ -1,5 +1,6 @@
 import 'package:explodier/features/nft/nft_state.dart';
 import 'package:explodier/infrastructures/models/nft/nft_metadata_model.dart';
+import 'package:explodier/infrastructures/models/nft/v_nft_item_model.dart';
 import 'package:explodier/infrastructures/repositories/nft_repository.dart';
 import 'package:explodier/infrastructures/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +12,8 @@ final nftCtrlProvider =
 
   return NftController(
     const NftState(
-      nft: AsyncLoading(),
-      nftExternalDatas: AsyncLoading(),
+      nfts: AsyncLoading(),
+      nftItems: AsyncLoading(),
     ),
     nftFacade: nftRepo,
     userFacade: userRepo,
@@ -28,63 +29,82 @@ class NftController extends StateNotifier<NftState> {
     required this.nftFacade,
     required this.userFacade,
   }) {
-    getNftTokenIds();
+    init();
   }
 
-  Future<void> getNftTokenIds() async {
+  void init() async {
+    await getNftAssets();
+    await getNftItems();
+  }
+
+  Future<void> getNftAssets() async {
     try {
-      state = state.copyWith(nft: const AsyncLoading());
+      state = state.copyWith(nfts: const AsyncLoading());
       final user = userFacade.currentUser;
-      final nft = await nftFacade.getNftTokenIds(
-        //"0xe4605d46fd0b3f8329d936a8b258d69276cba264",
-        contractAddress: user.walletAddress,
+      final nfts = await nftFacade.getUserNftAssets(
+        walletAddress: user.walletAddress,
         chainId: 1,
       );
-      state = state.copyWith(nft: AsyncData(nft));
-      getNftMetadata();
+      state = state.copyWith(nfts: AsyncData(nfts));
     } catch (e) {
-      state = state.copyWith(nft: AsyncError(e));
+      state = state.copyWith(nfts: AsyncError(e));
     }
   }
 
-  Future<void> getNftMetadata() async {
+  Future<void> getNftItems() async {
     try {
-      state = state.copyWith(nftExternalDatas: const AsyncLoading());
+      state = state.copyWith(nftItems: const AsyncLoading());
 
-      List<NftExternalDataModel> metadatas = [];
+      List<NftItemViewModel> items = [];
 
-      if (state.nft.value?.items != null) {
-        for (final nftItem in state.nft.value!.items!) {
-          if (nftItem.contractAddress == null || nftItem.tokenId == null) {
-            return;
+      // no nfts
+      if (state.nfts.value == null || state.nfts.value == []) {
+        state = state.copyWith(
+          nftItems: AsyncData(items),
+        );
+        return;
+      }
+
+      for (final nft in state.nfts.value!) {
+        if (nft.contractAddress == null || nft.tokenId == null) {
+          break;
+        }
+
+        final nftMetadata = await nftFacade.getNftExternalMetadata(
+          contractAddress: nft.contractAddress!,
+          tokenId: nft.tokenId!,
+          chainId: 1,
+        );
+
+        if (nftMetadata.items == null) {
+          print("items null");
+          break;
+        }
+
+        for (var item in nftMetadata.items!) {
+          if (item.nftData == null) {
+            print("nftData null");
+
+            break;
           }
 
-          final nftMetadata = await nftFacade.getNftExternalMetadata(
-            //"0x3CAb982C10ca41f1a1992815b9185375c472cedc",
-            contractAddress: nftItem.contractAddress!,
-            tokenId: nftItem.tokenId!,
-            chainId: 1,
-          );
-
-          if (nftMetadata.items == null) {
-            return;
-          }
-          for (var item in nftMetadata.items!) {
-            if (item.nftData == null) {
-              return;
-            }
-            for (var nftData in item.nftData!) {
-              metadatas.add(nftData.externalData!);
-            }
+          for (var nftData in item.nftData!) {
+            items.add(
+              NftItemViewModel(
+                imageURL: nft.imageUrl ?? nftData.externalData?.image,
+                name: nft.name ?? nftData.externalData?.name,
+                contractName: item.contractName,
+              ),
+            );
           }
         }
       }
-      print(metadatas.length);
+      print("AsyncData");
       state = state.copyWith(
-        nftExternalDatas: AsyncData(metadatas),
+        nftItems: AsyncData(items),
       );
     } catch (e) {
-      state = state.copyWith(nftExternalDatas: AsyncError(e));
+      state = state.copyWith(nftItems: AsyncError(e));
     }
   }
 }

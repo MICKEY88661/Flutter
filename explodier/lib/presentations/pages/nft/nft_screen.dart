@@ -1,7 +1,10 @@
-import 'package:explodier/features/nft/nft_controller.dart';
-import 'package:explodier/infrastructures/models/nft/nft_metadata_model.dart';
+import 'package:explodier/infrastructures/models/nft/v_nft_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:explodier/features/nft/nft_controller.dart';
+import 'package:explodier/infrastructures/models/nft/nft_metadata_model.dart';
+
+import 'nft_item.dart';
 
 class NFTScreen extends ConsumerStatefulWidget {
   const NFTScreen({Key? key}) : super(key: key);
@@ -16,20 +19,26 @@ class _NFTScreenState extends ConsumerState<NFTScreen>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ref.watch(nftCtrlProvider).nftExternalDatas.when(
+    return ref.watch(nftCtrlProvider).nftItems.when(
           data: (data) {
-            if (data.isEmpty) {
+            if (data == null || data.isEmpty) {
               return const Center(
-                child: Text("i dont have them"),
+                child: Text("You have no assets"),
               );
             }
-            return const Center();
-            // return ListView.builder(
-            //   itemCount: data.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     return Nft(data[index]);
-            //   },
-            // );
+
+            return ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return NftItem(
+                  NftItemViewModel(
+                    imageURL: data[index].imageURL,
+                    name: data[index].name,
+                    contractName: data[index].contractName,
+                  ),
+                );
+              },
+            );
           },
           error: (error, _) => Text(
             error.toString(),

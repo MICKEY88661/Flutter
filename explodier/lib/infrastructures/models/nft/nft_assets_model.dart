@@ -1,7 +1,25 @@
+import 'package:explodier/infrastructures/models/blockdaemon/meta_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'nft_assets_model.g.dart';
+
+@immutable
+@JsonSerializable()
+class NftModel {
+  final List<NftAssetModel>? data;
+  final MetaModel? meta;
+
+  const NftModel({
+    this.data,
+    this.meta,
+  });
+
+  factory NftModel.fromJson(Map<String, dynamic> json) =>
+      _$NftModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NftModelToJson(this);
+}
 
 @immutable
 @JsonSerializable()

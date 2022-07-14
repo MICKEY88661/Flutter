@@ -1,27 +1,27 @@
 import 'package:equatable/equatable.dart';
-import 'package:explodier/infrastructures/models/nft/nft_metadata_model.dart';
-import 'package:explodier/infrastructures/models/nft/nft_model.dart';
+import 'package:explodier/infrastructures/models/nft/nft_assets_model.dart';
+import 'package:explodier/infrastructures/models/nft/v_nft_item_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NftState extends Equatable {
-  final AsyncValue<NftModel> nft;
-  final AsyncValue<List<NftExternalDataModel?>> nftExternalDatas;
+  final AsyncValue<List<NftAssetModel>?> nfts;
+  final AsyncValue<List<NftItemViewModel>?> nftItems;
 
   const NftState({
-    required this.nft,
-    required this.nftExternalDatas,
+    required this.nfts,
+    required this.nftItems,
   });
 
   NftState copyWith({
-    AsyncValue<NftModel>? nft,
-    AsyncValue<List<NftExternalDataModel?>>? nftExternalDatas,
+    AsyncValue<List<NftAssetModel>?>? nfts,
+    AsyncValue<List<NftItemViewModel>?>? nftItems,
   }) {
     return NftState(
-      nft: nft ?? this.nft,
-      nftExternalDatas: nftExternalDatas ?? this.nftExternalDatas,
+      nfts: nfts ?? this.nfts,
+      nftItems: nftItems ?? this.nftItems,
     );
   }
 
   @override
-  List<Object?> get props => [nft, nftExternalDatas];
+  List<Object?> get props => [nfts, nftItems];
 }
